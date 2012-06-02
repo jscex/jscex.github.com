@@ -5,6 +5,10 @@
 <meta charset="utf-8"/>
 <title>Jscex - 回归 JavaScript 的异步流程控制</title>
 <link rel="stylesheet" href="http://jeffreyzhao.github.com/jscex/stylesheets/stylesheet.css" />
+<link rel="stylesheet" href="/styles/highlight-vs.css" />
+<script src="/scripts/jquery-1.7.2.min.js"></script>
+<script src="/scripts/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 <style>
 img { width: auto; }
 </style>
@@ -17,7 +21,7 @@ img { width: auto; }
           <a id="forkme_banner" href="https://github.com/JeffreyZhao/jscex">View on GitHub</a>
 
           <h1 id="project_title">Jscex</h1>
-          <h2 id="project_tagline">回归 JavaScript 的异步流程控制</h2>
+          <h2 id="project_tagline">Jscex - 回归 JavaScript 的异步流程控制</h2>
 
             <section id="downloads">
               <a class="zip_download_link" href="https://github.com/JeffreyZhao/jscex/zipball/master">Download this project as a .zip file</a>
@@ -29,7 +33,11 @@ img { width: auto; }
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
         <section id="main_content" class="inner">
-            <h3>新闻</h3>
+            <script src="/scripts/jscex-async.bundle.min.js"></script>
+
+<script src="/scripts/sorting-animations.js"></script>
+
+<h3>新闻</h3>
 
 <p>目前已为Jscex设立专项资金。自2012年起，每月1号将为Jscex拨款1024元人民币，用于鼓励个人对Jscex的研究及使用，包括但不限于推广建议，研究，案例，或是在开源项目中使用Jscex。</p>
 
@@ -43,108 +51,143 @@ img { width: auto; }
 
 <p>请尝试解决以下问题，并与基于Jscex的实现进行比较。</p>
 
-<h4>问题：每隔一秒打印菲波那契数列</h4>
+<h4>排序算法动画演示</h4>
 
-<p>您一定听说过<a href="http://en.wikipedia.org/wiki/Fibonacci_number">菲波那契（Fibonacci）数列</a>，它的定义是：</p>
+<p>人人都会排序算法，那么能否使用动画来演示排序算法的运作过程？例如以下是快速排序的动画演示：</p>
 
-<p><img src="http://latex.codecogs.com/gif.latex?F_n%20=%20F_{n-1}%20+%20F_{n%20-%202}" alt="image" title="" /></p>
+<p><input value="排序" type="button" id="btnSort" /></p>
 
-<p>其边界情况为：</p>
+<div>
 
-<p><img src="http://latex.codecogs.com/gif.latex?F_0%20=%200,%20F_1%20=%201" alt="image" title="" /></p>
+<canvas id="sorting-canvas" width="300" height="300" style="border:solid 1px black">
+    您的浏览器不支持Canvas绘图，请使用IE9+，Chrome，Firefox，Safari等现代浏览器。
+</canvas>
 
-<p>我们可以很轻松地写出其迭代算法：</p>
+<script>/* Begin */
 
-<pre><code>var fib = function () {
+    var sa = new SortingAnimations($("#sorting-canvas")[0]);
+    var array = sa.randomArray();
+    sa.paint(array);
 
-    console.log(0);
-    console.log(1);
+    var btnSort = $("#btnSort");
+    if (sa.supported) {
+        btnSort.click(function () {
+            btnSort.attr("disabled", "disabled");
 
-    var a = 0, current = 1;
-    while (true) {
-        var b = a;
-        a = current;
-        current = a + b;
+            if (array.sorted) {
+                array = sa.randomArray();
+            }
 
-        console.log(current);
+            sa.quickSortAsync(array).start().addEventListener("success", function () {
+                array.sorted = true;
+                btnSort.removeAttr("disabled");
+            });
+        });
+    } else {
+        btnSort.remove();
     }
-};
-</code></pre>
 
-<p>执行<code>fib()</code>会无限打印出菲薄纳契数列中的每一项。那么，您能将其改写成“每隔一秒打印一项”吗？</p>
+/* End */</script>
 
-<h4>引入Jscex脚本</h4>
+</div>
 
-<p>Jscex可以在任何JavaScript引擎上执行，我们这里目前最典型的两类JavaScript执行环境来演示Jscex使用方式。</p>
+<h4>问题分析</h4>
 
-<h4>浏览器</h4>
+<p>我们就以最简单的“冒泡排序”进行分析：</p>
 
-<p>要在浏览器里使用Jscex辅助异步程序开发，只需要在页面上引入<a href="bin\jscex-async.bundle.js">jscex-async.bundle.js</a>文件即可，例如：</p>
+<pre><code>var compare = function (x, y) {
+    return x - y; 
+}
 
-<pre><code>&lt;script src="jscex-async.bundle.js"&gt;&lt;/script&gt;
-</code></pre>
+var swap = function (a, i, j) {
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+}
 
-<p>当然，您也可以直接引用<a href="https://raw.github.com/JeffreyZhao/jscex/master/bin/jscex-async.bundle.js">在线文件</a>。请注意，这是一个打包文件，体积较大，适用于开发及调试。如果您要在生产环境里使用Jscex，请参考<a href="doc/deploy-cn.md">部署Jscex</a>相关内容。</p>
-
-<h4>Node.js</h4>
-
-<p>Node.js是目前流行的网络开发技术。如果要在Node.js中使用Jscex，可以使用<a href="http://npmjs.org/">Node Package Manager</a>（即npm命令）安装jscex，jscex-jit，jscex-async和jscex-async-powerpack四个模块。</p>
-
-<pre><code>npm install jscex jscex-jit jscex-async jscex-async-powerpack
-</code></pre>
-
-<p>然后在脚本里使用：</p>
-
-<pre><code>var Jscex = require("jscex");
-require("jscex-jit").init(Jscex);
-require("jscex-async").init(Jscex);
-require("jscex-async-powerpack").init(Jscex);
-</code></pre>
-
-<h4>实现</h4>
-
-<p>基于Jscex实现“每隔一秒打印菲薄纳契数列”十分简单直接，请在quick-start.html或quick-start.js里写入以下脚本：</p>
-
-<pre><code>var fib = eval(Jscex.compile("async", function () {
-
-    $await(Jscex.Async.sleep(1000)); // “暂停”一秒
-    console.log(0);
-
-    $await(Jscex.Async.sleep(1000)); // “暂停”一秒
-    console.log(1);
-
-    var a = 0, current = 1;
-    while (true) {
-        var b = a;
-        a = current;
-        current = a + b;
-
-        $await(Jscex.Async.sleep(1000)); // “暂停”一秒
-        console.log(current);
+var bubbleSort = function (array) {
+    for (var x = 0; x &lt; array.length; x++) {
+        for (var y = 0; y &lt; array.length - x; y++) {
+            if (compare(array[y], array[y + 1]) &gt; 0) {
+                swap(array, y, y + 1);
+            }
+        }
     }
+}
+</code></pre>
+
+<p>所谓冒泡排序，便是使用双重循环，两两比较相邻的元素，如果顺序不对，则交换两者。我们有了基本算法，想要将其用动画表现出来，其实只要运用以下两点策略即可：</p>
+
+<ul>
+<li>增加交换和比较操作的耗时，因为排序算法的性能主要取决于交换和比较操作的次数多少。</li>
+<li>每次交换元素后重绘数组，这样便能表现出排序的动画效果。</li>
+</ul>
+
+<p>看上去很简单，不是吗？</p>
+
+<h4>异步编程之殇</h4>
+
+<p>在其他一些语言里，我们往往可以使用<code>sleep</code>函数让当前线程停止一段时间，这样便起到了“等待”的效果。但是，在JavaScript中我们无法做到这一点，唯一的“延时”操作只能使用setTimeout来实现，但它却需要一个回调函数，我们无法这样让<code>compare</code>方法“暂停”一段时间：</p>
+
+<pre><code>var compare = function (x, y) {
+    setTimeout(function () {
+        return x - y;
+    }, 10); // compare方法依然会立即返回
+}
+</code></pre>
+
+<p>我们只能把<code>compare</code>改造为带有回调函数的方法：</p>
+
+<pre><code>var compare = function (x, y, callback) {
+    setTimeout(function () {
+        callback(x - y); // 通过回调函数传递结果
+    }, 10);
+}
+</code></pre>
+
+<p>同理，<code>swap</code>方法也需要通过回调函数传递结果。此时我们会发现，我们很难在<code>bubbleSort</code>中使用异步的<code>compare</code>和<code>swap</code>方法，而且如果要配合循环和判断一齐使用则更加困难。这就是异步编程在流程控制方面的难点所在：我们无法使用传统的JavaScript进行表达，算法会被回调函数分解地支离破碎。</p>
+
+<h4>Jscex实现</h4>
+
+<p>为了解决异步编程中的流程控制问题，人们设计构造了<a href="https://github.com/joyent/node/wiki/modules#wiki-async-flow">各式各样的辅助类库</a>来简化开发。但我们认为，流程控制是一个语言层面上的问题，JavaScript已经提供了流程控制需要的所有关键字（例如<code>if</code>、<code>for</code>、<code>try</code>等等），开发人员也早已无数次证明了这种方式的灵活及高效。如果我们可以“修复”这些流程控制机制对异步操作“无效”的问题，则开发人员无需学习新的API，不会引入额外的噪音，一切都是最简单，最熟悉的JavaScript代码。</p>
+
+<p>Jscex便做到了这一点。例如，使用Jscex来实现冒泡排序动画，则只需要：</p>
+
+<pre><code>var compareAsync = eval(Jscex.compile("async", function (x, y) {
+    $await(Jscex.Async.sleep(10)); // 暂停10毫秒
+    return x - y; 
 }));
 
-fib().start();
+var swapAsync = eval(Jscex.compile("async", function (a, i, j) {
+    $await(Jscex.Async.sleep(20)); // 暂停20毫秒
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+    paint(a); // 重绘数组
+}));
+
+var bubbleSortAsync = eval(Jscex.compile("async", function (array) {
+    for (var x = 0; x &lt; array.length; x++) {
+        for (var y = 0; y &lt; array.length - x; y++) {
+            // 异步比较元素
+            var r = $await(compareAsync(array[y], array[y + 1]));
+            // 异步交换元素
+            if (r &gt; 0) $await(swapAsync(array, y, y + 1));
+        }
+    }
+}));
 </code></pre>
 
-<h4>执行</h4>
+<p>与之前的代码相比，基于Jscex编写的代码只有两个变化：</p>
 
-<p>请使用Chrome，Firefox，Safari或IE8及以上版本浏览器打开quick-start.html页面（Jscex支持IE 6及以上浏览器，但当前示例并不支持，因为只有IE8开始才有<code>console.log</code>方法），或使用Node.js执行quick-start.js文件：</p>
+<ol>
+<li>与传统的<code>function () { ... }</code>方式不同，我们使用<code>eval(Jscex.compile("async", function () { ... }))</code>来定义一个“异步函数”。这样的函数定义方式是“模板代码”，没有任何变化，可以认做是“异步函数”与“普通函数”的区别。</li>
+<li>对于“异步操作”，如上面代码中的<code>Jscex.Async.sleep</code>内置函数（其中封装了setTimeout函数），则可以使用<code>$await(...)</code>来等待其完成，方法会在该异步操作结束之后才继续下去，其执行流程与普通JavaScript没有任何区别。</li>
+</ol>
 
-<pre><code>node quick-start.js
-</code></pre>
+<p>完整代码请参考“<a href="../samples/async/sorting-algorithms.html">排序算法动画</a>”示例，其中实现了“冒泡排序”，“选择排序”以及“快速排序”三种排序算法的动画。</p>
 
-<p>此时，您将会在浏览器工具或是Node.js标准输出里看到菲薄纳契数列，每隔一秒输出一项。</p>
+<h3>总结</h3>
 
-<p>您也可以在<a href="https://github.com/JeffreyZhao/jscex/tree/master/samples/async">示例目录</a>下找到<a href="https://github.com/JeffreyZhao/jscex/tree/master/samples/async/quick-start.html">quick-start.html</a>及<a href="https://github.com/JeffreyZhao/jscex/tree/master/samples/async/quick-start.js">quick-start.js</a>文件。</p>
+<p>JavaScript的异步及非阻塞特性，让程序员无法使用传统方式表达代码，导致语义丢失，算法被分解地支离破碎。例如，由于只能使用setTimeout回调来实现“延迟”效果，即便是要做到“暂停”这样的简单功能，也已经让人难以看出这是一个“冒泡排序”的实现。</p>
 
-<h4>其他</h4>
-
-<p>您可以尝试使用其他任何方式解决这个问题，并与基于Jscex的做法进行比较。</p>
-
-<p>JavaScript的异步及非阻塞特性，让程序员无法使用传统方式表达代码，导致语义丢失，算法被分解地支离破碎。例如，由于只能使用setTimeout回调来实现“延迟”效果，即便是要做到“每隔一秒”这样的简单功能，也已经让人难以看出这是一个“菲薄纳契”数列的实现。</p>
-
-<p>使用Jscex，让程序员可以在异步的、非阻塞的JavaScript执行环境里使用传统的“阻塞”表达方式编写代码。并让异步任务的协作，取消以及错误处理等常见需求变得前所未有的简单。</p>
+<p>Jscex的哲学，是真正将异步编程中的流程控制<strong>回归JavaScript本身</strong>。您可以尝试使用其他任何方式解决这个问题，并与上述基于Jscex的做法进行比较。使用Jscex，让程序员可以在异步的、非阻塞的JavaScript执行环境里使用传统的“阻塞”表达方式编写代码。并让异步任务的协作，取消以及错误处理等常见需求变得前所未有的简单。</p>
 
 <p>更多内容请参考“<a href="./manuals/async/">Jscex异步模块</a>”。</p>
 
@@ -198,6 +241,12 @@ TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGE.
 </code></pre>
+
+<script>/* Begin */
+
+$("pre > code").last().addClass("no-highlight");
+
+/* End */</script>
         </section>
     </div>
 
