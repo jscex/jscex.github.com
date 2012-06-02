@@ -27,6 +27,50 @@ a {
   display: none;
 }
 
+/*
+h1 {
+  font-size: 2.55em;
+  line-height: 1.375em;
+}
+*/
+
+
+h1 {
+  font-size: 1.9em;
+  line-height: 1.227em;
+  margin: 0 0 0.5em;
+}
+
+h2 {
+  font-size: 1.5em;
+  line-height: 1.0909em;
+  margin: 1.5em 0 0.5em;
+}
+
+h2 + h2 {
+  margin: 0 0 0.5em;
+}
+
+h3 {
+  font-size: 1.2em;
+  line-height: 1.1282em;
+  margin: 2.2em 0 0.5em;
+}
+
+h3 + h3 {
+  margin: 0 0 0.5em;
+}
+
+h4 {
+  font-size: 1.125em;
+  line-height: 1.4em;
+}
+
+h5 {
+  font-size: 1em;
+  line-height: 1.4667em;
+}
+
 .notice {
   display: block;
   padding: 1em;
@@ -142,66 +186,13 @@ hr {
 #toc {
   
 }
-
-  #toc h1 {
-    font-size: 1.9em;
-    line-height: 1.227em;
-    margin: 0 0 0.5em;
-  }
   
-  #toc h1 a {
+  #toc h2 a {
     float: right;
   }
   
   #toc hr {
     margin: 1em 0 2em;
-  }
-  
-#main {
-
-}
-
-/*
-h1 {
-  font-size: 2.55em;
-  line-height: 1.375em;
-}
-*/
-
-  #main h1 {
-    font-size: 1.9em;
-    line-height: 1.227em;
-    margin: 0 0 0.5em;
-  }
-
-  #main h2 {
-    font-size: 1.5em;
-    line-height: 1.0909em;
-    margin: 1.5em 0 0.5em;
-  }
-
-  #main h2 + h2 {
-    margin: 0 0 0.5em;
-  }
-
-  #main h3 {
-    font-size: 1.2em;
-    line-height: 1.1282em;
-    margin: 2.2em 0 0.5em;
-  }
-
-  #main h3 + h3 {
-    margin: 0 0 0.5em;
-  }
-
-  #main h4 {
-    font-size: 1.125em;
-    line-height: 1.4em;
-  }
-  
-  #main h5 {
-    font-size: 1em;
-    line-height: 1.4667em;
   }
 
 p tt, p code,
