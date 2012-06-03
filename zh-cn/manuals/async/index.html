@@ -3,11 +3,11 @@
 <head>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta charset="utf-8"/>
-<title>Jscex使用指南 - 异步模块</title>
-<link rel="stylesheet" href="/styles/manuals.css" />
+<title>Jscex 开发指南 - 异步模块</title>
+<link rel="stylesheet" href="/styles/manual.css" />
 <link rel="stylesheet" href="/styles/highlight-vs.css" />
 <script src="/scripts/jquery-1.7.2.min.js"></script>
-<script src="/scripts/manuals.js"></script>
+<script src="/scripts/manual.js"></script>
 <script src="/scripts/highlight.pack.js"></script>
 <script>hljs.initHighlightingOnLoad();</script>
 
@@ -29,9 +29,9 @@
 <body id="container">
 
   <header>
-    <h1>Jscex使用指南 - 异步模块</h1>
+    <h1>Jscex 开发指南 - 异步模块</h1>
     <div id="gtoc">
-      <p><a href="/zh-cn/">首页</a> | <a href="/zh-cn/manuals/">使用指南</a></p>
+      <p><a href="/zh-cn/">主页</a> | <a href="/zh-cn/manuals/">开发指南</a></p>
     </div>
     <hr/>
   </header>
@@ -214,7 +214,7 @@ var ev = $await(Jscex.Async.onEvent(btnNext, "click"));
 console.write(ev.clientX, ev.clientY);
 </code></pre>
 
-<p>因为在Jscex异步模块眼中，用户的点击行为，也是“能在未来某个时刻返回的操作”，这便是一个异步任务。您可以在后文“<a href="../../samples/async/modal-dialog.html">模态对话框</a>”以及“<a href="../../samples/async/hanoi.html">汉诺塔</a>”示例中了解这个模型的威力。</p>
+<p>因为在Jscex异步模块眼中，用户的点击行为，也是“能在未来某个时刻返回的操作”，这便是一个异步任务。您可以在后文“<a href="samples/modal-dialog.html">模态对话框</a>”以及“<a href="samples/hanoi.html">汉诺塔</a>”示例中了解这个模型的威力。</p>
 
 <p>除了上文提到的<code>sleep</code>及<code>onEvent</code>以外，<a href="./powerpack.html">异步增强模块</a>里还包含了更多有用的辅助方法，来应对常见的异步协作问题。例如之前的“并发”执行示例，在实际情况下往往会使用异步增强模块中的<code>whenAll</code>辅助方法：</p>
 
@@ -660,24 +660,24 @@ task.addEventListener("complete", function (t) {
 <h3><a name="samples-browser"></a>浏览器示例</h3>
 
 <ul>
-<li><a href="../../samples/async/clock.html">时钟</a>：演示最基础的使用方式。</li>
-<li><a href="../../samples/async/sorting-algorithms.html">排序算法动画</a>：各类排序算法（冒泡，选择，快速）的演示动画。</li>
-<li><a href="../../samples/async/modal-dialog.html">模态对话框</a>：演示Jscex对于前端用户交互编写方式的改进。</li>
-<li><a href="../../samples/async/hanoi.html">汉诺塔</a>：汉诺塔解决方案的动画演示，同时涉及用户前端交互。</li>
+<li><a href="samples/clock.html">时钟</a>：演示最基础的使用方式。</li>
+<li><a href="samples/sorting-algorithms.html">排序算法动画</a>：各类排序算法（冒泡，选择，快速）的演示动画。</li>
+<li><a href="samples/modal-dialog.html">模态对话框</a>：演示Jscex对于前端用户交互编写方式的改进。</li>
+<li><a href="samples/hanoi.html">汉诺塔</a>：汉诺塔解决方案的动画演示，同时涉及用户前端交互。</li>
 </ul>
 
 <h3><a name="samples-nodejs"></a>Node.js示例</h3>
 
 <ul>
-<li><a href="../../samples/async/copy-dir.html">复制完整目录</a>：使用Node.js编写复制完整目录的功能</li>
-<li><a href="../../samples/async/static-server.html">静态文件服务器</a>：演示Node.js环境中最基础的使用方式。</li>
-<li><a href="../../samples/async/express-server.html">使用Express开发网站</a>：使用Jscex改善业务逻辑表现方式，并增强程序并发性。</li>
+<li><a href="samples/copy-dir.html">复制完整目录</a>：使用Node.js编写复制完整目录的功能</li>
+<li><a href="samples/static-server.html">静态文件服务器</a>：演示Node.js环境中最基础的使用方式。</li>
+<li><a href="samples/express-server.html">使用Express开发网站</a>：使用Jscex改善业务逻辑表现方式，并增强程序并发性。</li>
 </ul>
 
 <h3><a name="samples-others"></a>其他</h3>
 
 <ul>
-<li><a href="../../samples/async/jquery-bindings.html">jQuery异步操作绑定</a>：提供部分jQuery及其相关插件中异步操作的绑定。</li>
+<li><a href="samples/jquery-bindings.html">jQuery异步操作绑定</a>：提供部分jQuery及其相关插件中异步操作的绑定。</li>
 </ul>
 
 <h2><a name="related-links"></a>相关链接</h2>
