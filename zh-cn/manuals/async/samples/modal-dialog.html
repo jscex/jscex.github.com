@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta charset="utf-8"/>
+<title>Jscex 开发指南 - 模态对话框（异步编程示例）</title>
+<link rel="stylesheet" href="/styles/manual.css" />
+<link rel="stylesheet" href="/styles/highlight-vs.css" />
+<script src="/scripts/jquery-1.7.2.min.js"></script>
+<script src="/scripts/manual.js"></script>
+<script src="/scripts/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32349745-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+<body id="container">
+
+  <header>
+    <h1>Jscex 开发指南 - 模态对话框（异步编程示例）</h1>
+    <div id="gtoc">
+      <p><a href="/zh-cn/">主页</a> | <a href="/zh-cn/manuals/">开发指南</a></p>
+    </div>
+    <hr/>
+  </header>
+
+  <div id="toc">
+    <h2>索引</h2>
+
+    <ul id="toc-list"></ul>
+    
+    <hr/>
+  </div>
+
+  <h2><a name="description"></a>描述</h2>
+
+<p>如今前端应用的交互特性越来越多，而模态对话框是其中最常见的使用案例。由于JavaScript和HTML的限制，各种用户交互的参与都必须以回调函数（或是事件，而事件其实也可以认为是回调函数的一种）。但实际上，这种做法在很多情况下不能说是最直接且最易用的表达方式。</p>
+
+<p>本文将通过一个模态对话框与AJAX操作交互相结合的示例，演示如何使用<a href="../">Jscex异步模块</a>来轻松直接地表达结合紧密的一系列异步逻辑。</p>
+
+<h2><a name="requirement"></a>需求</h2>
+
+<p>“删除”是前端应用中常见的操作。由于包含一定危险性，在进行删除之前，我们经常会向用户进行确认，然后再向服务器端发送一个AJAX请求删除数据。这个示例的需求便由此而来，如下：</p>
+
+<ol>
+<li>点击“清空”按钮，弹出确认对话框。</li>
+<li>用户选择“确定”或“取消”
+<ul><li>选择“确定”
+<ol><li>发送AJAX请求至服务器端，完成后，</li>
+<li>给用户以提示信息。</li></ol></li>
+<li>选择“取消”，则给用户以提示信息。</li></ul></li>
+</ol>
+
+<p>为了保证用户体验，无论是“确定/取消”对话框，还是提示给用户看的信息，都不允许使用浏览器内置的<code>alert</code>和<code>confim</code>方法。也正是这点，增加了实现这一功能的复杂度。</p>
+
+<h2><a name="api"></a>相关API</h2>
+
+<p>方便起见，我们使用jQuery来实现模态对话框及AJAX操作，相关用法及绑定方式请参考“<a href="jquery-bindings.html">jQuery绑定</a>”。</p>
+
+<h2><a name="implementation"></a>实现</h2>
+
+<p>由于逻辑从按钮点击开始，我们便在按钮的<code>onclick</code>事件里调用一个异步方法：</p>
+
+<pre><code>&lt;input type="button" value="Empty" onclick="emptyAsync().start();" /&gt;
+</code></pre>
+
+<p>其中<code>emptyAsync</code>的实现是：</p>
+
+<pre><code>var emptyAsync = eval(Jscex.compile("async", function () {
+
+    // 弹出“确定/取消”对话框
+    var ok = false;            
+    $await($("#dialog-confirm").dialogAsync({
+        modal: true,
+        buttons: {
+            "OK": function () {
+                ok = true;
+                $(this).dialog("close");
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        }
+    }));
+
+    if (ok) {
+        // 用户选择“确定”，则发出AJAX请求
+        var response = $await($.ajaxAsync({
+            url: "modal-dialog.html",
+            dataType: "text"
+        }));
+
+        // 给用户以信息提示
+        $("#emptyLength").text(response.data.length);
+        $await($("#dialog-emptied").dialogAsync({ modal: true }));
+    } else {
+        // 用户选择“取消”，则给用户以提示信息
+        $await($("#dialog-canceled").dialogAsync({ modal: true }));
+    }
+
+    console.log("done");
+}))
+</code></pre>
+
+<p>首先，我们使用<code>dialogAsync</code>函数弹出一个对话框，这是一个异步方法，将在对话框关闭时完成。在用户点击“确认”按钮时，我们将<code>ok</code>变量设为true。对话框关闭之后，如果<code>ok</code>变量的值为true，发起一个AJAX请求，将返回结果显示在页面上，再显示下一个模态对话框。如果<code>ok</code>为false，这意味着用户没有点击“确认”按钮，则用另一个模态对话框提示用户。</p>
+
+<p>使用Jscex之后，程序员只需使用最传统的方式编写逻辑，而不会由于异步函数所需要的各式回调将逻辑打散，使程序既易写，又易读。</p>
+
+<h2><a name="related-links"></a>相关链接</h2>
+
+<ul>
+<li><a href="http://repository.jscex.info/samples/async/modal-dialog.html">在线演示</a></li>
+<li><a href="https://github.com/JeffreyZhao/jscex/blob/master/samples/async/modal-dialog.html">完整代码</a></li>
+<li><a href="jquery-bindings.html">jQuery绑定</a></li>
+<li><a href="../">Jscex异步模块</a></li>
+</ul>
+
+<h2><a name="appendix"></a>附录</h2>
+
+<h3><a name="appendix-none-jscex-implementation"></a>非Jscex实现</h3>
+
+<p>对比所需，在此附上相同功能的非Jscex的实现：</p>
+
+<pre><code>// 弹出“确定/取消”对话框          
+$("#dialog-confirm").dialog({
+    modal: true,
+    buttons: {
+        "OK": function () {
+            // 用户选择“确定”，则发出AJAX请求
+            $(this).dialog("close");
+            $.ajax({
+                url: "modal-dialog.html",
+                dataType: "text",
+                success: function (data) {
+                    // 给用户以信息提示
+                    $("#emptyLength").text(data.length);
+                    $("#dialog-emptied").dialog({
+                        modal: true,
+                        close: function () {
+                            console.log("done");
+                        }
+                    });
+                }
+            });
+        },
+        "Cancel": function () {
+            // 用户选择“取消”，则给用户以提示信息
+            $(this).dialog("close");
+            $("#dialog-canceled").dialog({
+                modal: true,
+                close: function () {
+                    console.log("done");
+                }
+            });
+        }
+    }
+});
+</code></pre>
+
+<p>如果您有更合适的非Jscex实现，请随时联系我。</p>
+    
+</body>
+</html>
