@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta charset="utf-8"/>
+<title>Jscex 开发指南 - jQuery绑定（异步编程示例）</title>
+<link rel="stylesheet" href="/styles/manual.css" />
+<link rel="stylesheet" href="/styles/highlight-vs.css" />
+<script src="/scripts/jquery-1.7.2.min.js"></script>
+<script src="/scripts/manual.js"></script>
+<script src="/scripts/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32349745-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+<body id="container">
+
+  <header>
+    <h1>Jscex 开发指南 - jQuery绑定（异步编程示例）</h1>
+    <div id="gtoc">
+      <p><a href="/zh-cn/">主页</a> | <a href="/zh-cn/manuals/">开发指南</a></p>
+    </div>
+    <hr/>
+  </header>
+
+  <div id="toc">
+    <h2>索引</h2>
+
+    <ul id="toc-list"></ul>
+    
+    <hr/>
+  </div>
+
+  <p><a href="http://jquery.com">jQuery</a>类库提供了丰富的异步操作，为了方便jQuery用户使用<a href="../">Jscex异步模块</a>，并演示常见的异步操作绑定模式。在绑定已有的异步操作时，我们通常会保持原有的参数输入方式不变，而只关注操作的“完成点”，这样使用者便可以快速地了解新方法的使用方式。</p>
+
+<h2>jQuery异步操作</h2>
+
+<p>jQuery提供了AJAX等典型的异步操作。</p>
+
+<h3>$.ajax</h3>
+
+<p>AJAX方法是典型的异步操作，在jQuery中，发起一个AJAX请求使用的是<code>$.ajax</code>方法，例如：</p>
+
+<pre><code>$.ajax({
+    url: "./getSomething",
+    dataType: "text",
+    success: function (data, textStatus, jqXHR) {
+        ...
+    },
+    error: function (jqXHR, textStatus, errorThrow) {
+        ...
+    }
+});
+</code></pre>
+
+<p>以上代码会向地址<code>./getSomething</code>发起一个AJAX请求（<code>url: "./getSomething"</code>），用于获取文本内容（<code>dataType: "text"</code>），如果成功则执行<code>success</code>回调函数，其中<code>data</code>参数便是获得的文本内容，在出错时则执行<code>error</code>回调函数。因此，<code>success</code>和<code>error</code>便是该方法的两个完成点，绑定方式如下：</p>
+
+<pre><code>$.ajaxAsync = function (options) {
+    return Task.create(function (t) {
+
+        options.success = function (data, textStatus, jqXHR) {
+            t.complete("success", {
+                data: data,
+                textStatus: textStatus,
+                jqXHR: jqXHR
+            });
+        }
+
+        options.error = function (jqXHR, textStatus, errorThrow) {
+            t.complete("failure", {
+                jqXHR: jqXHR,
+                textStatus: textStatus,
+                errorThrow: errorThrow
+            });
+        };
+
+        $.ajax(options);
+    });
+};
+</code></pre>
+
+<h2>jQuery UI异步操作</h2>
+
+<p><a href="http://jqueryui.com/">jQuery UI</a>提供了许多常见的UI组件，它们也可以视为异步操作。“异步操作”是指那些“在未来某一时刻结束的操作”，因此，如对话框的“关闭”即可视为该“显示对话框”异步操作的结束标志。</p>
+
+<h3>$.fn.dialog</h3>
+
+<p>jQuery UI提供了现成的<a href="http://jqueryui.com/demos/dialog/">模态对话框组件</a>，例如其最简单的使用方式：</p>
+
+<pre><code>&lt;div id="dialog-demo" title="Dialog title"&gt;
+    &lt;p&gt;Dialog messages.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+    $("#dialog-demo").dialog({
+        modal: true,
+        close: function () { … }
+    });
+&lt;/script&gt;
+</code></pre>
+
+<p><code>$("#some-id").dialog(…)</code>方法用于将某一个页面上的元素显示为对话框。我们设置<code>modal</code>参数为true，则它会成为一个模态窗口。<code>close</code>是一个回调函数，它会在窗体关闭的时候执行。如果我们要为对话框添加按钮，则可以这么实现：</p>
+
+<pre><code>$("#dialog-demo").dialog({
+    modal: true,
+    close: function () { … },
+    buttons: {
+        "OK": function () {
+            $(this).dialog("close");
+        },
+        "Cancel": function () {
+            $(this).dialog("close");
+        }
+    }
+});
+</code></pre>
+
+<p>对于<code>dialog</code>方法来说，其“完成点”显然是其<code>close</code>回调函数，因此它的绑定为：</p>
+
+<pre><code>$.fn.dialogAsync = function (options) {
+    var _this = this;
+
+    return Task.create(function (t) {
+
+        options.close = function () {
+            t.complete("success");
+        }
+
+        _this.dialog(options);
+    });
+}
+</code></pre>
+
+<h2>相关链接</h2>
+
+<ul>
+<li><a href="https://github.com/JeffreyZhao/jscex/blob/master/samples/async/jquery-bindings.js">完整代码</a></li>
+<li><a href="../">Jscex异步模块</a></li>
+</ul>
+    
+</body>
+</html>
