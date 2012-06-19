@@ -213,9 +213,9 @@ var rl = require("readline").createInterface(process.stdin, process.stdout);
 <p>并为相关的方法创建Jscex绑定：</p>
 
 <pre><code>var Jscex = require("../../src/jscex");
-require("../../src/jscex-jit").init(Jscex);
-require("../../src/jscex-async").init(Jscex);
-require("../../src/jscex-async-powerpack").init(Jscex);
+require("../../src/jscex-jit").init();
+require("../../src/jscex-async").init();
+require("../../src/jscex-async-powerpack").init();
 
 var Async = Jscex.Async;
 var Task = Async.Task;

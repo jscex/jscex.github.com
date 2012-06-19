@@ -48,7 +48,7 @@
 
 <h2><a name="import-module"></a>引入Jscex异步增强模块</h2>
 
-<p>如果您要使用Jscex异步增强模块，首先必须<a href="./">引入Jscex异步模块</a>，此时您会得到了一个Jscex根对象，之后再基于这个对象初始化异步增强模块。</p>
+<p>如果您要使用Jscex异步增强模块，首先必须<a href="./">引入Jscex异步模块</a>，此时您会得到了一个Jscex根对象，之后再初始化异步增强模块。</p>
 
 <h3><a name="import-module-nodejs"></a>Node.js</h3>
 
@@ -59,17 +59,16 @@
 
 <p>然后便可以在脚本中引入并初始化这个模块：</p>
 
-<pre><code>var Jscex = require("jscex"); // 引入基础模块
-require("jscex-jit").init(Jscex) // 引入并初始化Jscex JIT编译器
-require("jscex-async").init(Jscex); // 引入并初始化Jscex异步模块
-require("jscex-async-powerpack").init(Jscex); // 引入并初始化Jscex异步模块
+<pre><code>// ... 已引入Jscex异步模块 ...
+
+require("jscex-async-powerpack").init(); // 引入并初始化Jscex异步模块
 </code></pre>
 
 <h3><a name="import-module-browser"></a>浏览器</h3>
 
-<p>如果您要在浏览器里使用Jscex异步增强模块，请<a href="https://github.com/JeffreyZhao/jscex/blob/master/src/jscex-async-powerpack.js">下载该文件</a>，保存在合适的位置，并在页面中引入该文件即可：</p>
+<p>如果您要在浏览器里使用Jscex异步增强模块，则需要在页面中引入jscex-async-powerpack-x.y.z.js文件：</p>
 
-<pre><code>&lt;script src="jscex-async-powerpack.js"&gt;&lt;/script&gt;
+<pre><code>&lt;script src="jscex-async-powerpack-x.y.z.js"&gt;&lt;/script&gt;
 </code></pre>
 
 <p>此时异步增强模块会自动为根上的Jscex对象添加异步增强模块相关的成员。该方法也适用于各类<strong>没有</strong>实现CommonJS规范的JavaScript运行环境。</p>
