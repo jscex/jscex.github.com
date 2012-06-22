@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta charset="utf-8"/>
+<title>Jscex 开发指南 - JIT编译器模块</title>
+<link rel="stylesheet" href="/styles/manual.css" />
+<link rel="stylesheet" href="/styles/highlight-vs.css" />
+<script src="/scripts/jquery-1.7.2.min.js"></script>
+<script src="/scripts/manual.js"></script>
+<script src="/scripts/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32349745-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+<body id="container">
+
+  <header>
+    <h1>Jscex 开发指南 - JIT编译器模块</h1>
+    <div id="gtoc">
+      <p><a href="/zh-cn/">主页</a> | <a href="/zh-cn/manuals/">开发指南</a></p>
+    </div>
+    <hr/>
+  </header>
+
+  <div id="toc">
+    <h2>索引</h2>
+
+    <ul id="toc-list"></ul>
+    
+    <hr/>
+  </div>
+
+  <p>Jscex的JIT编译器提供了使用Jscex过程中所需的代码变换能力，能将一段带有绑定标志的普通JavaScript方法变为Monad形式。</p>
+
+<h2><a name="import-module"></a>引入Jscex编译器模块</h2>
+
+<p>首先我们必须<a href="../core/">引入核心组件</a>，之后再基于这个对象初始化JIT编译器模块。</p>
+
+<h3><a name="import-module-nodejs"></a>Node.js</h3>
+
+<p>如果您使用的是Node.js，可以直接使用<a href="http://npmjs.org/">Node Package Manager</a>（即npm命令）安装最新的jscex-jit包：</p>
+
+<pre><code>npm install jscex-jit
+</code></pre>
+
+<p>然后便可以在脚本中引入该组件：</p>
+
+<pre><code>var Jscex = require("jscex"); // 引入核心组件
+require("jscex-jit").init(); // 引入并初始化Jscex编译器模块
+</code></pre>
+
+<h3><a name="import-module-browser"></a>浏览器</h3>
+
+<p>在浏览器环境中使用JIT编译器模块，您同样需要引入<a href="../core/">核心组件</a>。此时在浏览器根（即window对象）上会出现一个Jscex对象，之后再依次引入<a href="../parser/">解析器</a>及JIT编译器的jscex-jit-x.y.z.js文件即可：</p>
+
+<pre><code>&lt;!-- 核心组件 --&gt;
+&lt;script src="jscex-x.y.z.js"&gt;&lt;/script&gt;
+
+&lt;!-- 解析器模块 --&gt;
+&lt;script src="jscex-parser-x.y.z.js"&gt;&lt;/script&gt;
+&lt;!-- JIT编译器模块 --&gt;
+&lt;script src="jscex-jit-x.y.z.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>至此，Jscex根对象已经包括了使用JIT编译器所需的所有成员。这种方式也适合各类<strong>没有</strong>实现CommonJS等包加载规范的JavaScript运行环境。</p>
+
+<h3><a name="import-module-others"></a>其他环境</h3>
+
+<p>Jscex自动支持一些其他的包加载规范。假如当前JavaScript运行环境实现了这些规范，则Jscex会自动采用这些规范。详细信息请参考“<a href="../importing.html">包引入</a>”相关内容。</p>
+    
+</body>
+</html>

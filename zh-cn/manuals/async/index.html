@@ -48,11 +48,11 @@
 
 <h2><a name="import-module"></a>引入Jscex异步模块</h2>
 
-<p>如果您要使用Jscex异步模块，首先必须<a href="../core/">引入核心组件</a>，之后再基于这个对象初始化异步模块。在开发环境里，您还需要<a href="../jit/">引入Jscex JIT编译器</a>。</p>
+<p>如果您要使用Jscex异步模块，首先必须<a href="../core/">引入核心组件</a>，之后再基于这个对象初始化异步模块。在开发环境里，您还需要引入<a href="../jit/">JIT编译器</a>。</p>
 
 <h3><a name="import-module-nodejs"></a>Node.js</h3>
 
-<p>如果您使用的是Node.js，可以直接使用<a href="http://npmjs.org/">Node Package Manager</a>（即npm命令）安装最新的jscex-async模块：</p>
+<p>如果您使用的是Node.js，可以直接使用<a href="http://npmjs.org/">Node Package Manager</a>（即npm命令）安装最新的jscex-async包：</p>
 
 <pre><code>npm install jscex-async
 </code></pre>
@@ -68,7 +68,7 @@ require("jscex-async").init(); // 引入并初始化Jscex异步模块
 <pre><code>require("jscex-jit").init() // 引入并初始化Jscex JIT编译器
 </code></pre>
 
-<p>此类方式也适合非<a href="http://nodejs.org/">Node.js</a>，但实现<a href="http://www.commonjs.org/">CommonJS规范</a>的JavaScript运行环境。</p>
+<p>此类方式也适合非<a href="http://nodejs.org/">Node.js</a>，但实现了<a href="http://www.commonjs.org/">CommonJS规范</a>的JavaScript运行环境。</p>
 
 <h3><a name="import-module-browser"></a>浏览器</h3>
 
@@ -91,7 +91,11 @@ require("jscex-async").init(); // 引入并初始化Jscex异步模块
 &lt;script src="jscex-jit.js"&gt;&lt;/script&gt;
 </code></pre>
 
-<p>由于后两者会显著增加加载体积，因此在生产环境中应该使用[预编译器]处理后并去除这两个模块。这种方式也适合各类<strong>没有</strong>实现CommonJS规范的JavaScript运行环境。</p>
+<p>由于后两者会显著增加加载体积，因此在生产环境中应该使用[预编译器]处理后并去除这两个模块。这种方式也适合各类<strong>没有</strong>实现CommonJS等包加载规范的JavaScript运行环境。</p>
+
+<h3><a name="import-module-others"></a>其他环境</h3>
+
+<p>Jscex自动支持一些其他的包加载规范。假如当前JavaScript运行环境实现了这些规范，则Jscex会自动采用这些规范。详细信息请参考“<a href="../importing.html">包引入</a>”相关内容。</p>
 
 <h2><a name="define-async-method"></a>定义异步方法</h2>
 
