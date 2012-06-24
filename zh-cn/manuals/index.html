@@ -49,12 +49,21 @@
 <p>Jscex以模块化形式分发，目前主要有以下几个模块：</p>
 
 <ul>
-<li><a href="main/">基础模块</a></li>
-<li><a href="/jit/">JIT编译器模块</a></li>
-<li><a href="aot/">AOT编译器模块</a></li>
+<li><a href="./parser/">解析器模块</a></li>
+<li><a href="./jit/">JIT编译器模块</a></li>
 <li><a href="builderbase/">构造器基础模块</a></li>
-<li><a href="async/">异步模块</a>
-<ul><li><a href="async/powerpack.html">异步增强模块</a></li></ul></li>
+<li><a href="./async/">异步模块</a>
+<ul><li><a href="./async/powerpack.html">异步增强模块</a></li></ul></li>
+</ul>
+
+<p>在使用任何Jscex模块之前，我们必须引入<a href="./core/">核心组件</a>，然后再<a href="./importing.html">加载所需模块</a>。</p>
+
+<h2><a name="tools"></a>工具</h2>
+
+<p>在开发Jscex过程中还会用到一些工具：</p>
+
+<ul>
+<li><a href="./aot/">预编译器</a>。</li>
 </ul>
     
 </body>
