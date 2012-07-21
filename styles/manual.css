@@ -141,7 +141,7 @@ h1, h2, h3, h4, h5, h6 {
   pre, tt, code {
     font-size: 0.95em;
     line-height: 1.5438em;
-    font-family: Consolas, Monaco, "Lucida Console", monospace;
+    font-family: Monaco, Consolas, "Lucida Console", monospace;
     margin: 0;
     padding: 0;
   }
